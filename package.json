@@ -2,10 +2,10 @@
   "name": "zero-gen",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/zero.js",
+  "main": "./src/zero-gen.js",
   "type": "module",
   "bin": {
-    "zero-gen": "./src/zero.js"
+    "zero-gen": "./src/zero-gen.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
