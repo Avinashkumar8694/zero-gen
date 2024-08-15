@@ -1,0 +1,301 @@
+import { RendererComponent, applyGlobalStyles, RendererAttribute, UserInterfaceType, AttributeType } from 'zero-annotation';
+import { LitElement, html, css } from 'lit';
+import { property } from 'lit/decorators.js';
+
+/**
+ * Represents a login form component with username, password, and user role selection.
+ * 
+ * @export
+ * @class {{componentClassName}}
+ * @extends {LitElement}
+ */
+@RendererComponent({
+    name: '{{componentSelector}}',
+    version: '1.0.0',
+    title: '{{componentLabel}}',
+    elementSelector: '{{componentSelectorPrefix}}-{{componentSelector}}',
+    group: 'Forms',
+    iconName: 'login-icon.png', // Replace with the path to your icon
+})
+@applyGlobalStyles()
+export class {{componentClassName}} extends LitElement {
+    
+    /**
+     * Component styles.
+     * 
+     * @static
+     * @memberof {{componentClassName}}
+     */
+    static styles = css`
+        :host {
+            display: block;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: auto;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    `;
+
+    /**
+     * Username input field.
+     * 
+     * @type {string}
+     * @memberof {{componentClassName}}
+     * 
+     * @description
+     * Represents the username input field. This field is used to capture the user's username.
+     * 
+     * @see {@link RendererAttribute}
+     * 
+     * @example
+     * ```typescript
+     * @property({ type: String })
+     * @RendererAttribute({
+     *     attributeType: AttributeType.PROPERTY,
+     *     uiComponentType: UserInterfaceType.TEXT_INPUT,
+     *     displayLabel: 'Username',
+     *     placeholderText: 'Enter your username',
+     *     fieldMappings: 'username',
+     * })
+     * username = '';
+     * ```
+     */
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.TEXT_INPUT,
+        displayLabel: 'Username',
+        placeholderText: 'Enter your username',
+        fieldMappings: 'username',
+    })
+    username = '';
+
+    /**
+     * Password input field.
+     * 
+     * @type {string}
+     * @memberof {{componentClassName}}
+     * 
+     * @description
+     * Represents the password input field. This field is used to capture the user's password.
+     * 
+     * @see {@link RendererAttribute}
+     * 
+     * @example
+     * ```typescript
+     * @property({ type: String })
+     * @RendererAttribute({
+     *     attributeType: AttributeType.PROPERTY,
+     *     uiComponentType: UserInterfaceType.TEXT_INPUT,
+     *     displayLabel: 'Password',
+     *     placeholderText: 'Enter your password',
+     *     fieldMappings: 'password',
+     *     validationRules: {
+     *         minLength: 6,
+     *     },
+     * })
+     * password = '';
+     * ```
+     */
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.TEXT_INPUT,
+        displayLabel: 'Password',
+        placeholderText: 'Enter your password',
+        fieldMappings: 'password',
+        validationRules: {
+            minLength: 6,
+        },
+    })
+    password = '';
+
+    /**
+     * Toggle switch for "Remember Me" option.
+     * 
+     * @type {boolean}
+     * @memberof {{componentClassName}}
+     * 
+     * @description
+     * Represents the "Remember Me" toggle switch. This option allows users to choose whether they want their login session to be remembered.
+     * 
+     * @see {@link RendererAttribute}
+     * 
+     * @example
+     * ```typescript
+     * @property({ type: Boolean })
+     * @RendererAttribute({
+     *     attributeType: AttributeType.PROPERTY,
+     *     uiComponentType: UserInterfaceType.TOGGLE_SWITCH,
+     *     displayLabel: 'Remember Me',
+     *     initialValue: false,
+     *     fieldMappings: 'rememberMe',
+     * })
+     * rememberMe = false;
+     * ```
+     */
+    @property({ type: Boolean })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.TOGGLE_SWITCH,
+        displayLabel: 'Remember Me',
+        initialValue: false,
+        fieldMappings: 'rememberMe',
+    })
+    rememberMe = false;
+
+    /**
+     * Dropdown menu for selecting user role.
+     * 
+     * @type {string}
+     * @memberof {{componentClassName}}
+     * 
+     * @description
+     * Represents the dropdown menu for selecting the user's role. The options include 'Admin' and 'User'.
+     * 
+     * @see {@link RendererAttribute}
+     * 
+     * @example
+     * ```typescript
+     * @property({ type: String })
+     * @RendererAttribute({
+     *     attributeType: AttributeType.PROPERTY,
+     *     uiComponentType: UserInterfaceType.DROP_DOWN_MENU,
+     *     displayLabel: 'User Role',
+     *     optionItems: [
+     *         { label: 'Admin', key: 'admin' },
+     *         { label: 'User', key: 'user' },
+     *     ],
+     *     fieldMappings: 'role',
+     * })
+     * role = 'user';
+     * ```
+     */
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.DROP_DOWN_MENU,
+        displayLabel: 'User Role',
+        optionItems: [
+            { label: 'Admin', key: 'admin' },
+            { label: 'User', key: 'user' },
+        ],
+        fieldMappings: 'role',
+    })
+    role = 'user';
+
+    /**
+     * Renders the login form.
+     * 
+     * @returns {TemplateResult} The HTML template for the form.
+     * @memberof {{componentClassName}}
+     */
+    render() {
+        return html`
+            <form @submit=${this.handleSubmit}>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" .value=${this.username} @input=${e => this.username = (e.target as HTMLInputElement).value} />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" .value=${this.password} @input=${e => this.password = (e.target as HTMLInputElement).value} />
+                </div>
+                <div class="form-group">
+                    <label for="rememberMe">Remember Me</label>
+                    <input id="rememberMe" type="checkbox" .checked=${this.rememberMe} @change=${e => this.rememberMe = (e.target as HTMLInputElement).checked} />
+                </div>
+                <div class="form-group">
+                    <label for="role">User Role</label>
+                    <select id="role" .value=${this.role} @change=${e => this.role = (e.target as HTMLSelectElement).value}>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        `;
+    }
+
+    /**
+     * Handles form submission.
+     * 
+     * @param {Event} event - The submit event.
+     * @memberof {{componentClassName}}
+     * 
+     * @description
+     * Handles the form submission event, collects form data, and dispatches a custom event with the form data.
+     * 
+     * @example
+     * ```typescript
+     * @RendererAttribute({
+     *     attributeType: AttributeType.EVENT,
+     *     displayLabel: 'On Submit',
+     *     eventTrigger: 'onSubmit',
+     * })
+     * handleSubmit(event: Event) {
+     *     event.preventDefault();
+     *     const formData = {
+     *         username: this.username,
+     *         password: this.password,
+     *         rememberMe: this.rememberMe,
+     *         role: this.role,
+     *     };
+     *     this.dispatchEvent(new CustomEvent('onSubmit', {
+     *         detail: { formData },
+     *         bubbles: true,
+     *         composed: true,
+     *     }));
+     * }
+     * ```
+     */
+    @RendererAttribute({
+        attributeType: AttributeType.EVENT,
+        displayLabel: 'On Submit',
+        eventTrigger: 'onSubmit',
+    })
+    handleSubmit(event: Event) {
+        event.preventDefault();
+        const formData = {
+            username: this.username,
+            password: this.password,
+            rememberMe: this.rememberMe,
+            role: this.role,
+        };
+        this.dispatchEvent(new CustomEvent('onSubmit', {
+            detail: { formData },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+}

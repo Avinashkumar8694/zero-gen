@@ -1,0 +1,32 @@
+{
+  "name": "zero-gen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/zero.js",
+  "type": "module",
+  "bin": {
+    "zero-gen": "./src/zero.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.3.0",
+    "axios": "^1.7.3",
+    "change-case": "^5.4.4",
+    "colorette": "^2.0.20",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "form-data": "^4.0.0",
+    "handlebars": "^4.7.8",
+    "open": "^10.1.0",
+    "prettier": "^3.3.3",
+    "vite": "^5.4.0"
+  }
+}

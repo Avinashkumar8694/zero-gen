@@ -1,0 +1,11 @@
+class {{pluginClassName}} {
+    init() {
+        console.log('initialosed');
+    }
+
+    onRegister() {
+        console.log(`Plugin registered and available as zero['{{plginId}}']`);
+    }
+
+}
+zero.registerPlugins('{{plginId}}', new {{pluginClassName}}());

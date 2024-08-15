@@ -1,0 +1,57 @@
+{
+    "compilerOptions": {
+        // Target JavaScript version
+        "target": "ES2020",
+        // Module system to use
+        "module": "ESNext",
+        // Libraries to include in the compilation
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        // Skip type checking of declaration files
+        "skipLibCheck": true,
+
+        /* Bundler-related Options */
+        // Module resolution strategy
+        "moduleResolution": "node",
+        // Allow importing TypeScript files with extensions
+        "allowImportingTsExtensions": true,
+        // Enable importing .json files
+        "resolveJsonModule": true,
+        // Treat each file as a separate module
+        "isolatedModules": true,
+        // Disable emitting output files
+        "noEmit": true,
+
+        /* Decorators Support */
+        // Enable experimental support for decorators
+        "experimentalDecorators": true,
+        // Emit metadata for decorators
+        "emitDecoratorMetadata": true,
+        // Control behavior for class field initializers
+        "useDefineForClassFields": false,
+
+        /* Linting and Type Checking */
+        // Enable strict type checking options
+        "strict": false,
+        // Report errors on unused local variables
+        "noUnusedLocals": true,
+        // Report errors on unused parameters
+        "noUnusedParameters": true,
+        // Report errors for fallthrough cases in switch statements
+        "noFallthroughCasesInSwitch": true,
+
+        // Emit additional interop code for CommonJS and ES modules
+        "esModuleInterop": true
+    },
+    // Specify files to include in the project
+    "include": ["packages", "index.ts"]
+
+    // Other options can be added here as needed
+    // "exclude": ["node_modules"],
+    // "baseUrl": ".",
+    // "paths": {},
+    // "outDir": "./dist",
+    // "rootDir": "./src",
+    // "removeComments": true,
+    // "sourceMap": true,
+    // "declaration": true
+}
