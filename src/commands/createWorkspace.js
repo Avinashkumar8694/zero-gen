@@ -1,9 +1,9 @@
 import {workspace} from '../utill/project.js'
 
 export const createWorkspaceCommand = {
-  name: 'new',
-  description: 'Create a new workspace',
-  action: (name) => {
-    workspace(name,join(cwd(), name));
+  name: 'init <projectName>',
+  description: 'Initialize a new project',
+  action: (name,path) => {
+    workspace(name,path);
   },
 };

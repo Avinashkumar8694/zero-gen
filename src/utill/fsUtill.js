@@ -1,15 +1,18 @@
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { done, failed, inprogress, log } from './log.js'
+import { success, fail, progress } from './log.js'
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import fs from 'fs';
+import path from 'path';
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 export const createDirectory = (dir, success_msg, error_msg) => {
     try {
         mkdirSync(dir);
-        done(`${success_msg}`);
+        success(`${success_msg}`);
     } catch (e) {
-        failed(`${error_msg}`, e);
-        exit(1);
+        fail(`${error_msg}`, e);
+        process.exit(1);
     }
 };
 export const copySync = (source, dest, success_msg, err_msg) => {
@@ -17,10 +20,10 @@ export const copySync = (source, dest, success_msg, err_msg) => {
         cpSync(source, dest, {
             recursive: true,
         });
-        done(`${success_msg}`);
+        success(`${success_msg}`);
     } catch (e){
-        failed(`${err_msg}`, e);
-        exit(1);
+        fail(`${err_msg}`, e);
+        process.exit(1);
     }
 };
 
@@ -61,3 +64,33 @@ export const copyAssets = (componentDir) => {
 export const clean = dir => {
     rmSync(dir, { recursive: true });
 };
+
+
+// Function to get all package directories
+export const getPackagePathsSync = (dir) => {
+    const packagePaths = [];
+    const items = fs.readdirSync(dir, { withFileTypes: true });
+
+    for (const item of items) {
+        const fullPath = path.join(dir, item.name);
+        if (item.isDirectory()) {
+            packagePaths.push(fullPath);
+        }
+    }
+
+    return packagePaths;
+}
+
+// Function to filter package paths by package name from package.json
+export const filterPackagePathsByPackageName = (packageName, packagesDir) => {
+    const packagePaths = getPackagePathsSync(packagesDir);
+    
+    return packagePaths.filter(packagePath => {
+        const packageJsonPath = path.join(packagePath, 'package.json');
+        if (fs.existsSync(packageJsonPath)) {
+            const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+            return packageJson.name === packageName;
+        }
+        return false;
+    });
+}

@@ -14,7 +14,7 @@ const initializeStyles = () => {
     document.head?.appendChild(styleElement);
 };
 
-const createInputElement = (key: string, value: string, customElement: HTMLElement) => {
+const createInputElement = (key: string, value: any, customElement: HTMLElement) => {
     const inputElement = document.createElement('input');
     inputElement.type = 'text';
     inputElement.value = value;

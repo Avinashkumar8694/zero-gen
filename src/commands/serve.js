@@ -1,4 +1,4 @@
-import { startPluginsServer } from '../utill/startPluginServer';
+import { startPluginsServer } from '../utill/startPluginServer.js';
 
 export const serveCommand = {
   name: 'serve',

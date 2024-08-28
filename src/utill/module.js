@@ -10,6 +10,7 @@ import { success, fail, progress } from './log.js';
 import { moduleTemplatesPath, pluginJsonPath } from './pathUtill.js';
 import { formatCode } from './prettierUtill.js';
 import { copyAssets } from './fsUtill.js';
+import {logExecution, getCurrentPath, getProjectPath} from './cmd.js'
 
 /**
  * Main function to generate a new module package in the workspace.
@@ -19,7 +20,7 @@ import { copyAssets } from './fsUtill.js';
  */
 export const generateModulePackageInWorkspace = async (wsPath, name, description) => {
     const moduleDir = join(wsPath, 'packages', name);
-
+    logExecution(`Create module`, { name, description: description, moduleDir });
     if (existsSync(moduleDir)) {
         handleErrorAndExit(`Module ${moduleDir} already exists`);
     } else {

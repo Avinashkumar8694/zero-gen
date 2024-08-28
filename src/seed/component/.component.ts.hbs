@@ -212,7 +212,7 @@ export class {{componentClassName}} extends LitElement {
         ],
         fieldMappings: 'role',
     })
-    role = 'user';
+    userrole = 'user';
 
     /**
      * Renders the login form.
@@ -237,7 +237,7 @@ export class {{componentClassName}} extends LitElement {
                 </div>
                 <div class="form-group">
                     <label for="role">User Role</label>
-                    <select id="role" .value=${this.role} @change=${e => this.role = (e.target as HTMLSelectElement).value}>
+                    <select id="role" .value=${this.userrole} @change=${e => this.userrole = (e.target as HTMLSelectElement).value}>
                         <option value="admin">Admin</option>
                         <option value="user">User</option>
                     </select>
@@ -269,7 +269,7 @@ export class {{componentClassName}} extends LitElement {
      *         username: this.username,
      *         password: this.password,
      *         rememberMe: this.rememberMe,
-     *         role: this.role,
+     *         role: this.userrole,
      *     };
      *     this.dispatchEvent(new CustomEvent('onSubmit', {
      *         detail: { formData },
@@ -290,7 +290,7 @@ export class {{componentClassName}} extends LitElement {
             username: this.username,
             password: this.password,
             rememberMe: this.rememberMe,
-            role: this.role,
+            role: this.userrole,
         };
         this.dispatchEvent(new CustomEvent('onSubmit', {
             detail: { formData },

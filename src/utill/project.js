@@ -1,11 +1,15 @@
-import { copySync } from './fsUtill.js';
+// import {  } from './fsUtill.js';
 import { handleException, executecmd } from './cmd.js';
-import { createDirectory, updatePackageJson, addDefaultScripts, addDefaultDependencies } from './fsUtill'
+import { createDirectory, updatePackageJson, addDefaultScripts, addDefaultDependencies, copySync } from './fsUtill.js'
 import { bold } from 'colorette';
 import { pluginJsonPath } from './pathUtill.js';
-import { done, progress } from './log.js';
+import { success, progress } from './log.js';
 import { formatCode } from './prettierUtill.js';
 import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+import { join } from 'node:path';
+import { execSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 const initiateWorkspace = dir => {
     executecmd(`npm init -y`, dir, `Initiated Workspace ${bold(dir)}`, `Failed to initiate Workspace`);
@@ -36,7 +40,7 @@ const createPluginJsonFile = async (directory, pluginName) => {
     const jsonData = generatePluginData(pluginName);
     const formattedJson = await formatJson(jsonData);
     savePluginJsonFile(directory, formattedJson);
-    done(`plugin.json created in ${dir}`);
+    success(`plugin.json created in ${directory}`);
 };
 
 const setupWorkspace = async (dir) => {
@@ -55,7 +59,7 @@ const setupWorkspace = async (dir) => {
     writeFileSync(packageJsonPath, await formatCode(pkgJson, 'json'));
     execSync(`npm install`, { cwd: dir });
 
-    done(`Workspace setup done: ${bold(dir)}`);
+    success(`Workspace setup success: ${bold(dir)}`);
 };
 
 export const workspace = async (name, dir) => {
