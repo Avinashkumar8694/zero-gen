@@ -1,6 +1,6 @@
 import { logExecution, getCurrentPath, getProjectPath ,getPackagesPaths} from '../utill/cmd.js';
 import {kebabCase } from 'change-case';
-import {filterPackagePathsByPackageName} from '../utill/fsUtill.js'
+import {filterPackagePathsByPackageName, copySync} from '../utill/fsUtill.js'
 import { success, progress } from './log.js';
 import { join,sep } from 'node:path';
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -55,12 +55,11 @@ const buildPlugin = async (pluginPath, wsPath, name) => {
                 emptyOutDir: true,
             },
         });
-        cpSync(
+        copySync(
             join(_p, 'dist'),
             join(wsPath, 'server', 'plugins'),
-            {
-                recursive: true,
-            }
+            "Build added to plougin server",
+            "failed to add build to plugin server"
         );
     });
 
