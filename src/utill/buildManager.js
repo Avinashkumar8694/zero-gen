@@ -55,6 +55,13 @@ const buildPlugin = async (pluginPath, wsPath, name) => {
                 emptyOutDir: true,
             },
         });
+        cpSync(
+            join(_p, 'dist'),
+            join(wsPath, 'server', 'plugins'),
+            {
+                recursive: true,
+            }
+        );
     });
 
     // Wait for all builds to complete
