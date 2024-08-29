@@ -1,4 +1,5 @@
 import * as componentsLib from './public-api.ts';
+import { RendererComponent, applyGlobalStyles, RendererAttribute, UserInterfaceType, AttributeType, RendererAttributeConfiguration, DropdownOptionItem, RangeSettings } from 'zero-annotation';
 
 declare global {
     interface Window {
@@ -14,51 +15,138 @@ const initializeStyles = () => {
     document.head?.appendChild(styleElement);
 };
 
-const createInputElement = (key: string, value: any, customElement: HTMLElement) => {
-    const inputElement = document.createElement('input');
-    inputElement.type = 'text';
-    inputElement.value = value;
-    inputElement.placeholder = key;
-    inputElement.addEventListener('change', (e) => {
-        customElement[key] = (e.target as HTMLInputElement).value;
-    });
+const createInputElement = (key: string, config: RendererAttributeConfiguration, customElement: HTMLElement) => {
+    const inputElement = document.createElement('div');
+    
+    const label = document.createElement('label');
+    label.textContent = config.displayLabel || key;
+    label.htmlFor = key;
+    inputElement.appendChild(label);
+
+    switch (config.uiComponentType) {
+        case UserInterfaceType.TEXT_INPUT:
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.id = key;
+            textInput.value = config.initialValue?.toString() || '';
+            textInput.placeholder = config.placeholderText || '';
+            textInput.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(textInput);
+            break;
+            
+        case UserInterfaceType.TOGGLE_SWITCH:
+            const toggleSwitch = document.createElement('input');
+            toggleSwitch.type = 'checkbox';
+            toggleSwitch.id = key;
+            toggleSwitch.checked = Boolean(config.initialValue);
+            toggleSwitch.addEventListener('change', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).checked;
+            });
+            inputElement.appendChild(toggleSwitch);
+            break;
+            
+        case UserInterfaceType.DROP_DOWN_MENU:
+            const dropdown = document.createElement('select');
+            dropdown.id = key;
+            (config.optionItems as DropdownOptionItem[]).forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.key.toString();
+                optionElement.textContent = option.label.toString();
+                dropdown.appendChild(optionElement);
+            });
+            dropdown.addEventListener('change', (e) => {
+                customElement[key] = (e.target as HTMLSelectElement).value;
+            });
+            inputElement.appendChild(dropdown);
+            break;
+            
+        case UserInterfaceType.MULTI_SELECT:
+            const multiSelect = document.createElement('select');
+            multiSelect.id = key;
+            multiSelect.multiple = true;
+            (config.optionItems as DropdownOptionItem[]).forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.key.toString();
+                optionElement.textContent = option.label.toString();
+                multiSelect.appendChild(optionElement);
+            });
+            multiSelect.addEventListener('change', (e) => {
+                customElement[key] = Array.from((e.target as HTMLSelectElement).selectedOptions).map(option => option.value);
+            });
+            inputElement.appendChild(multiSelect);
+            break;
+            
+        case UserInterfaceType.RANGE_SLIDER:
+            const rangeSlider = document.createElement('input');
+            rangeSlider.type = 'range';
+            rangeSlider.id = key;
+            rangeSlider.min = (config.optionItems as RangeSettings).minimumValue?.toString() || '0';
+            rangeSlider.max = (config.optionItems as RangeSettings).maximumValue?.toString() || '100';
+            rangeSlider.value = config.initialValue?.toString() || '0';
+            rangeSlider.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(rangeSlider);
+            break;
+            
+        case UserInterfaceType.COLOR_PICKER_TOOL:
+            const colorPicker = document.createElement('input');
+            colorPicker.type = 'color';
+            colorPicker.id = key;
+            colorPicker.value = config.initialValue?.toString() || '#ffffff';
+            colorPicker.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(colorPicker);
+            break;
+
+        // Add cases for other UserInterfaceTypes as needed
+
+        default:
+            const defaultInput = document.createElement('input');
+            defaultInput.type = 'text';
+            defaultInput.id = key;
+            defaultInput.value = config.initialValue?.toString() || '';
+            defaultInput.placeholder = config.placeholderText || '';
+            defaultInput.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(defaultInput);
+            break;
+    }
+
     return inputElement;
 };
 
 const registerComponent = (name: string, config: { inputs?: any; outputs?: any }) => {
-    const { inputs = {}, outputs = { events: ['change'] } } = config;
-    const fieldSet = document.createElement('fieldset');
-    const legend = document.createElement('legend');
-    legend.textContent = name;
+    const { inputs = {}, outputs = { events: [] } } = config;
 
     const customElement = document.createElement(name) as any;
-    const componentKey = name.substr(5);
 
-    if (!globalThis.zeroComponents[componentKey]) {
-        globalThis.zeroComponents[componentKey] = [];
+    if (!globalThis.zeroComponents[name]) {
+        globalThis.zeroComponents[name] = [];
     }
-    globalThis.zeroComponents[componentKey].push(customElement);
+    globalThis.zeroComponents[name].push(customElement);
 
-    Object.entries(inputs).forEach(([key, value]) => {
-        fieldSet.appendChild(createInputElement(key, value, customElement));
-    });
-
-    fieldSet.appendChild(legend);
-    fieldSet.appendChild(customElement);
+    // Update the UI to show the component in the list
+    updateComponentList();
 
     (outputs.events || []).forEach(event => {
         customElement.addEventListener(event, (e: Event) => {
             console.log(`[${name}][event:${event}]`, e);
         });
     });
-
-    document.body.appendChild(fieldSet);
 };
 
-const loadComponents = () => {
-    const componentsConfig = extractComponentsConfig();
-    Object.entries(componentsConfig).forEach(([name, config]) => {
-        registerComponent(name, config);
+const loadComponents = (): Promise<void> => {
+    return new Promise((resolve) => {
+        const componentsConfig = extractComponentsConfig();
+        Object.entries(componentsConfig).forEach(([name, config]) => {
+            registerComponent(name, config);
+        });
+        resolve(); // Notify that components have been loaded
     });
 };
 
@@ -71,19 +159,104 @@ const extractComponentsConfig = (): Record<string, any> => {
         const selector = `${componentMetadata.selector}-${componentMetadata.version}`;
 
         components[selector] = {
-            inputs: inputsMetadata.reduce((acc: Record<string, string>, { fieldMappings, defaultValue }) => {
-                acc[fieldMappings] = defaultValue ?? '';
+            inputs: inputsMetadata.reduce((acc: Record<string, RendererAttributeConfiguration>, { fieldMappings, ...rest }) => {
+                acc[fieldMappings] = { ...rest };
                 return acc;
             }, {}),
-            outputs: { events: ['change'] },
+            outputs: { events: inputsMetadata.filter(input => input.eventTrigger).map(input => input.eventTrigger) },
         };
     }
 
     return components;
 };
 
+// Function to update the component list in the UI
+const updateComponentList = () => {
+    const componentList = document.getElementById('componentList');
+    if (componentList) {
+        componentList.innerHTML = ''; // Clear existing list
+        Object.keys(globalThis.zeroComponents).forEach(key => {
+            const listItem = document.createElement('li');
+            listItem.textContent = key;
+            listItem.addEventListener('click', () => {
+                const component = globalThis.zeroComponents[key][0]; // Assuming single instance for simplicity
+                displayComponent(key, component);
+                updateUrlWithComponent(key);
+                updateNavForComponent(key); // Open sidenav
+            });
+            componentList.appendChild(listItem);
+        });
+    } else {
+        console.error('componentList element not found');
+    }
+};
+
+const displayComponent = (key: string, component: HTMLElement) => {
+    const main = document.getElementById('main');
+    if (main) {
+        main.innerHTML = ''; // Clear existing content
+        main.appendChild(component);
+    } else {
+        console.error('main element not found');
+    }
+};
+
+const updateUrlWithComponent = (componentName: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('component', componentName);
+    history.pushState({}, '', url.toString());
+};
+
 // Event listener for DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initializeStyles();
-    loadComponents();
+    await loadComponents(); // Ensure components are loaded before updating the UI
+    updateComponentList(); // Update the UI with the list of component keys
+
+    // Handle URL changes
+    const urlParams = new URLSearchParams(window.location.search);
+    const componentName = urlParams.get('component');
+    if (componentName) {
+        const component = globalThis.zeroComponents[componentName]?.[0];
+        if (component) {
+            displayComponent(componentName, component);
+            updateNavForComponent(componentName);
+        }
+    } else {
+        hideNav(); // Hide sidenav if no component is selected
+    }
 });
+
+// Update sidenav based on selected component
+const updateNavForComponent = (componentName: string) => {
+    const sidenavelist = document.getElementById('sidenav-list');
+    const componentConfig = extractComponentsConfig()[componentName];
+    if (sidenavelist && componentConfig) {
+        sidenavelist.innerHTML = ''; // Clear existing inputs
+        Object.entries(componentConfig.inputs).forEach(([key, config]) => {
+            const inputElement = createInputElement(key, config, globalThis.zeroComponents[componentName][0]);
+            sidenavelist.appendChild(inputElement);
+        });
+        showNav(); // Show sidenav when a component is selected
+    } else {
+        console.error('sidenav-list element not found or componentConfig not found');
+    }
+};
+
+const showNav = () => {
+    const sidenav = document.getElementById('sidenav');
+    if (sidenav) {
+        sidenav.style.display = 'block';
+    } else {
+        console.error('sidenav element not found');
+    }
+};
+
+const hideNav = () => {
+    const sidenav = document.getElementById('sidenav');
+    if (sidenav) {
+        sidenav.style.display = 'none';
+    } else {
+        console.error('sidenav element not found');
+    }
+};
