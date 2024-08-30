@@ -1,5 +1,5 @@
 import * as componentsLib from './public-api.ts';
-import { RendererComponent, applyGlobalStyles,DatePickerConfig, TextAreaConfig, RangeSliderConfig, NumberInputConfig, FileInputConfig,CheckableInputConfig, RendererAttribute, UserInterfaceType, AttributeType, RendererAttributeConfiguration, DropdownOptionItem, RangeSettings, TextInputConfig,DropdownInputConfig } from 'zero-annotation';
+import { UserInterfaceType, DropdownOptionItem, TypedInputOptionItem, RangeSettings, RendererAttributeConfiguration } from 'zero-annotation';
 declare global {
     interface Window {
         zero: any;
@@ -14,7 +14,7 @@ const initializeStyles = () => {
     document.head?.appendChild(styleElement);
 };
 
-const createInputElement = (key: string, config: RendererAttributeConfiguration, customElement: HTMLElement) => {
+const createInputElement = (key: string, config: any, customElement: HTMLElement) => {
     const inputElement = document.createElement('div');
     
     const label = document.createElement('label');
@@ -228,7 +228,7 @@ const extractComponentsConfig = (): Record<string, any> => {
         const selector = `${componentMetadata.selector}-${componentMetadata.version}`;
 
         components[selector] = {
-            inputs: inputsMetadata.filter(input => !input.eventTrigger).reduce((acc: Record<string, RendererAttributeConfiguration>, { fieldMappings, ...rest }) => {
+            inputs: inputsMetadata.filter(input => !input.eventTrigger).reduce((acc: Record<string, any>, { fieldMappings, ...rest }) => {
                 acc[fieldMappings] = { ...rest };
                 return acc;
             }, {}),
@@ -261,6 +261,7 @@ const updateComponentList = () => {
 };
 
 const displayComponent = (key: string, component: HTMLElement) => {
+    let _tmp=key;
     const main = document.getElementById('main');
     if (main) {
         main.innerHTML = ''; // Clear existing content
