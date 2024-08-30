@@ -1,5 +1,5 @@
 import * as componentsLib from './public-api.ts';
-import { UserInterfaceType, DropdownOptionItem, TypedInputOptionItem, RangeSettings, RendererAttributeConfiguration } from 'zero-annotation';
+import { UserInterfaceType, DropdownOptionItem,RangeSettings } from 'zero-annotation';
 declare global {
     interface Window {
         zero: any;
@@ -249,7 +249,7 @@ const updateComponentList = () => {
             listItem.textContent = key;
             listItem.addEventListener('click', () => {
                 const component = globalThis.zeroComponents[key][0]; // Assuming single instance for simplicity
-                displayComponent(key, component);
+                displayComponent(component);
                 updateUrlWithComponent(key);
                 updateNavForComponent(key); // Open sidenav
             });
@@ -260,8 +260,7 @@ const updateComponentList = () => {
     }
 };
 
-const displayComponent = (key: string, component: HTMLElement) => {
-    let _tmp=key;
+const displayComponent = (component: HTMLElement) => {
     const main = document.getElementById('main');
     if (main) {
         main.innerHTML = ''; // Clear existing content
@@ -289,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (componentName) {
         const component = globalThis.zeroComponents[componentName]?.[0];
         if (component) {
-            displayComponent(componentName, component);
+            displayComponent(component);
             updateNavForComponent(componentName);
         }
     } else {
