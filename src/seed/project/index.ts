@@ -1,6 +1,5 @@
 import * as componentsLib from './public-api.ts';
-import { RendererComponent, applyGlobalStyles, RendererAttribute, UserInterfaceType, AttributeType, RendererAttributeConfiguration, DropdownOptionItem, RangeSettings } from 'zero-annotation';
-
+import { RendererComponent, applyGlobalStyles,DatePickerConfig, TextAreaConfig, RangeSliderConfig, NumberInputConfig, FileInputConfig,CheckableInputConfig, RendererAttribute, UserInterfaceType, AttributeType, RendererAttributeConfiguration, DropdownOptionItem, RangeSettings, TextInputConfig,DropdownInputConfig } from 'zero-annotation';
 declare global {
     interface Window {
         zero: any;
@@ -35,8 +34,31 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
             });
             inputElement.appendChild(textInput);
             break;
+
+        case UserInterfaceType.PASSWORD_INPUT:
+            const passwordInput = document.createElement('input');
+            passwordInput.type = 'password';
+            passwordInput.id = key;
+            passwordInput.value = config.initialValue?.toString() || '';
+            passwordInput.placeholder = config.placeholderText || '';
+            passwordInput.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(passwordInput);
+            break;
             
-        case UserInterfaceType.TOGGLE_SWITCH:
+        case UserInterfaceType.TEXTAREA:
+            const textarea = document.createElement('textarea');
+            textarea.id = key;
+            textarea.value = config.initialValue?.toString() || '';
+            textarea.placeholder = config.placeholderText || '';
+            textarea.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLTextAreaElement).value;
+            });
+            inputElement.appendChild(textarea);
+            break;
+
+        case UserInterfaceType.CHECKBOX:
             const toggleSwitch = document.createElement('input');
             toggleSwitch.type = 'checkbox';
             toggleSwitch.id = key;
@@ -46,13 +68,38 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
             });
             inputElement.appendChild(toggleSwitch);
             break;
-            
-        case UserInterfaceType.DROP_DOWN_MENU:
+
+        case UserInterfaceType.RADIO_BUTTON:
+            const radioGroup = document.createElement('div');
+            (config.optionItems as DropdownOptionItem[]).forEach(option => {
+                const radioWrapper = document.createElement('div');
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = key;
+                radioInput.id = `${key}_${option.value}`;
+                radioInput.value = option.value.toString();
+                radioInput.checked = option.value.toString() === config.initialValue?.toString();
+                radioInput.addEventListener('change', (e) => {
+                    customElement[key] = (e.target as HTMLInputElement).value;
+                });
+
+                const radioLabel = document.createElement('label');
+                radioLabel.htmlFor = radioInput.id;
+                radioLabel.textContent = option.label.toString();
+                
+                radioWrapper.appendChild(radioInput);
+                radioWrapper.appendChild(radioLabel);
+                radioGroup.appendChild(radioWrapper);
+            });
+            inputElement.appendChild(radioGroup);
+            break;
+
+        case UserInterfaceType.DROPDOWN:
             const dropdown = document.createElement('select');
             dropdown.id = key;
-            (config.optionItems as DropdownOptionItem[]).forEach(option => {
+            (config.optionItems as DropdownOptionItem[])?.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option.key.toString();
+                optionElement.value = option.value.toString();
                 optionElement.textContent = option.label.toString();
                 dropdown.appendChild(optionElement);
             });
@@ -61,14 +108,14 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
             });
             inputElement.appendChild(dropdown);
             break;
-            
+
         case UserInterfaceType.MULTI_SELECT:
             const multiSelect = document.createElement('select');
             multiSelect.id = key;
             multiSelect.multiple = true;
-            (config.optionItems as DropdownOptionItem[]).forEach(option => {
+            (config.optionItems as DropdownOptionItem[])?.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option.key.toString();
+                optionElement.value = option.value.toString();
                 optionElement.textContent = option.label.toString();
                 multiSelect.appendChild(optionElement);
             });
@@ -82,8 +129,8 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
             const rangeSlider = document.createElement('input');
             rangeSlider.type = 'range';
             rangeSlider.id = key;
-            rangeSlider.min = (config.optionItems as RangeSettings).minimumValue?.toString() || '0';
-            rangeSlider.max = (config.optionItems as RangeSettings).maximumValue?.toString() || '100';
+            rangeSlider.min = (config.optionItems as RangeSettings).min?.toString() || '0';
+            rangeSlider.max = (config.optionItems as RangeSettings).max?.toString() || '100';
             rangeSlider.value = config.initialValue?.toString() || '0';
             rangeSlider.addEventListener('input', (e) => {
                 customElement[key] = (e.target as HTMLInputElement).value;
@@ -91,7 +138,7 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
             inputElement.appendChild(rangeSlider);
             break;
             
-        case UserInterfaceType.COLOR_PICKER_TOOL:
+        case UserInterfaceType.COLOR_PICKER:
             const colorPicker = document.createElement('input');
             colorPicker.type = 'color';
             colorPicker.id = key;
@@ -100,6 +147,27 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
                 customElement[key] = (e.target as HTMLInputElement).value;
             });
             inputElement.appendChild(colorPicker);
+            break;
+        
+        case UserInterfaceType.FILE_INPUT:
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.id = key;
+            fileInput.addEventListener('change', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).files;
+            });
+            inputElement.appendChild(fileInput);
+            break;
+
+        case UserInterfaceType.DATE_PICKER:
+            const datePicker = document.createElement('input');
+            datePicker.type = 'date';
+            datePicker.id = key;
+            datePicker.value = config.initialValue?.toString() || '';
+            datePicker.addEventListener('input', (e) => {
+                customElement[key] = (e.target as HTMLInputElement).value;
+            });
+            inputElement.appendChild(datePicker);
             break;
 
         // Add cases for other UserInterfaceTypes as needed
@@ -119,6 +187,7 @@ const createInputElement = (key: string, config: RendererAttributeConfiguration,
 
     return inputElement;
 };
+
 
 const registerComponent = (name: string, config: { inputs?: any; outputs?: any }) => {
     const { inputs = {}, outputs = { events: [] } } = config;
@@ -159,7 +228,7 @@ const extractComponentsConfig = (): Record<string, any> => {
         const selector = `${componentMetadata.selector}-${componentMetadata.version}`;
 
         components[selector] = {
-            inputs: inputsMetadata.reduce((acc: Record<string, RendererAttributeConfiguration>, { fieldMappings, ...rest }) => {
+            inputs: inputsMetadata.filter(input => !input.eventTrigger).reduce((acc: Record<string, RendererAttributeConfiguration>, { fieldMappings, ...rest }) => {
                 acc[fieldMappings] = { ...rest };
                 return acc;
             }, {}),

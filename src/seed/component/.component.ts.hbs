@@ -1,12 +1,13 @@
-import { RendererComponent, applyGlobalStyles, RendererAttribute, UserInterfaceType, AttributeType } from 'zero-annotation';
+import { RendererComponent, applyGlobalStyles, RendererAttribute, UserInterfaceType, AttributeType, DropdownOptionItem, CheckableOption, TextInputConfig, DropdownInputConfig, CheckableInputConfig, RangeSliderConfig, FileInputConfig, DatePickerConfig, ColorPickerConfig, NumberInputConfig, TextAreaConfig, SwitchConfig, HiddenInputConfig, RendererAttributeConfiguration, DataSourceMapping, TypedInputMapping } from 'zero-annotation';
+
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
 /**
- * Represents a login form component with username, password, and user role selection.
+ * Represents a user profile form with various input fields.
  * 
  * @export
- * @class {{componentClassName}}
+ * @class UserProfileForm
  * @extends {LitElement}
  */
 @RendererComponent({
@@ -15,81 +16,25 @@ import { property } from 'lit/decorators.js';
     title: '{{componentLabel}}',
     elementSelector: '{{componentSelectorPrefix}}-{{componentSelector}}',
     group: 'Forms',
-    iconName: 'login-icon.png', // Replace with the path to your icon
+    iconName: 'profile-icon.png', // Replace with your icon path
 })
 @applyGlobalStyles()
 export class {{componentClassName}} extends LitElement {
-    
-    /**
-     * Component styles.
-     * 
-     * @static
-     * @memberof {{componentClassName}}
-     */
+
     static styles = css`
-        :host {
-            display: block;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            max-width: 400px;
-            margin: auto;
-            background-color: #f9f9f9;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:disabled {
-            background-color: #ccc;
+        /* Add styles here */
+        form{
+            display: flex;
+            flex-direction: column;
         }
     `;
 
-    /**
-     * Username input field.
-     * 
-     * @type {string}
-     * @memberof {{componentClassName}}
-     * 
-     * @description
-     * Represents the username input field. This field is used to capture the user's username.
-     * 
-     * @see {@link RendererAttribute}
-     * 
-     * @example
-     * ```typescript
-     * @property({ type: String })
-     * @RendererAttribute({
-     *     attributeType: AttributeType.PROPERTY,
-     *     uiComponentType: UserInterfaceType.TEXT_INPUT,
-     *     displayLabel: 'Username',
-     *     placeholderText: 'Enter your username',
-     *     fieldMappings: 'username',
-     * })
-     * username = '';
-     * ```
-     */
+    userRoleOptions: DropdownOptionItem[] = [
+        { value: 'admin', label: 'Admin' },
+        { value: 'user', label: 'User' },
+        { value: 'guest', label: 'Guest' }
+    ]
+
     @property({ type: String })
     @RendererAttribute({
         attributeType: AttributeType.PROPERTY,
@@ -100,185 +45,130 @@ export class {{componentClassName}} extends LitElement {
     })
     username = '';
 
-    /**
-     * Password input field.
-     * 
-     * @type {string}
-     * @memberof {{componentClassName}}
-     * 
-     * @description
-     * Represents the password input field. This field is used to capture the user's password.
-     * 
-     * @see {@link RendererAttribute}
-     * 
-     * @example
-     * ```typescript
-     * @property({ type: String })
-     * @RendererAttribute({
-     *     attributeType: AttributeType.PROPERTY,
-     *     uiComponentType: UserInterfaceType.TEXT_INPUT,
-     *     displayLabel: 'Password',
-     *     placeholderText: 'Enter your password',
-     *     fieldMappings: 'password',
-     *     validationRules: {
-     *         minLength: 6,
-     *     },
-     * })
-     * password = '';
-     * ```
-     */
     @property({ type: String })
     @RendererAttribute({
         attributeType: AttributeType.PROPERTY,
-        uiComponentType: UserInterfaceType.TEXT_INPUT,
+        uiComponentType: UserInterfaceType.PASSWORD_INPUT,
         displayLabel: 'Password',
         placeholderText: 'Enter your password',
         fieldMappings: 'password',
-        validationRules: {
-            minLength: 6,
-        },
     })
     password = '';
 
-    /**
-     * Toggle switch for "Remember Me" option.
-     * 
-     * @type {boolean}
-     * @memberof {{componentClassName}}
-     * 
-     * @description
-     * Represents the "Remember Me" toggle switch. This option allows users to choose whether they want their login session to be remembered.
-     * 
-     * @see {@link RendererAttribute}
-     * 
-     * @example
-     * ```typescript
-     * @property({ type: Boolean })
-     * @RendererAttribute({
-     *     attributeType: AttributeType.PROPERTY,
-     *     uiComponentType: UserInterfaceType.TOGGLE_SWITCH,
-     *     displayLabel: 'Remember Me',
-     *     initialValue: false,
-     *     fieldMappings: 'rememberMe',
-     * })
-     * rememberMe = false;
-     * ```
-     */
-    @property({ type: Boolean })
-    @RendererAttribute({
-        attributeType: AttributeType.PROPERTY,
-        uiComponentType: UserInterfaceType.TOGGLE_SWITCH,
-        displayLabel: 'Remember Me',
-        initialValue: false,
-        fieldMappings: 'rememberMe',
-    })
-    rememberMe = false;
-
-    /**
-     * Dropdown menu for selecting user role.
-     * 
-     * @type {string}
-     * @memberof {{componentClassName}}
-     * 
-     * @description
-     * Represents the dropdown menu for selecting the user's role. The options include 'Admin' and 'User'.
-     * 
-     * @see {@link RendererAttribute}
-     * 
-     * @example
-     * ```typescript
-     * @property({ type: String })
-     * @RendererAttribute({
-     *     attributeType: AttributeType.PROPERTY,
-     *     uiComponentType: UserInterfaceType.DROP_DOWN_MENU,
-     *     displayLabel: 'User Role',
-     *     optionItems: [
-     *         { label: 'Admin', key: 'admin' },
-     *         { label: 'User', key: 'user' },
-     *     ],
-     *     fieldMappings: 'userrole',
-     * })
-     * userrole = 'user';
-     * ```
-     */
     @property({ type: String })
     @RendererAttribute({
         attributeType: AttributeType.PROPERTY,
-        uiComponentType: UserInterfaceType.DROP_DOWN_MENU,
+        uiComponentType: UserInterfaceType.DROPDOWN,
         displayLabel: 'User Role',
         optionItems: [
-            { label: 'Admin', key: 'admin' },
-            { label: 'User', key: 'user' },
+            { value: 'admin', label: 'Admin' },
+            { value: 'user', label: 'User' },
+            { value: 'guest', label: 'Guest' }
         ],
-        fieldMappings: 'userrole',
+        fieldMappings: 'userRole',
     })
-    userrole = 'user';
+    userRole = '';
 
-    /**
-     * Renders the login form.
-     * 
-     * @returns {TemplateResult} The HTML template for the form.
-     * @memberof {{componentClassName}}
-     */
-    render() {
-        return html`
-            <form @submit=${this.handleSubmit}>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input id="username" type="text" .value=${this.username} @input=${e => this.username = (e.target as HTMLInputElement).value} />
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input id="password" type="password" .value=${this.password} @input=${e => this.password = (e.target as HTMLInputElement).value} />
-                </div>
-                <div class="form-group">
-                    <label for="rememberMe">Remember Me</label>
-                    <input id="rememberMe" type="checkbox" .checked=${this.rememberMe} @change=${e => this.rememberMe = (e.target as HTMLInputElement).checked} />
-                </div>
-                <div class="form-group">
-                    <label for="role">User Role</label>
-                    <select id="role" .value=${this.userrole} @change=${e => this.userrole = (e.target as HTMLSelectElement).value}>
-                        <option value="admin">Admin</option>
-                        <option value="user">User</option>
-                    </select>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-        `;
-    }
+    @property({ type: Boolean })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.CHECKBOX,
+        displayLabel: 'Accept Terms',
+        fieldMappings: 'termsAccepted',
+    })
+    termsAccepted = false;
 
-    /**
-     * Handles form submission.
-     * 
-     * @param {Event} event - The submit event.
-     * @memberof {{componentClassName}}
-     * 
-     * @description
-     * Handles the form submission event, collects form data, and dispatches a custom event with the form data.
-     * 
-     * @example
-     * ```typescript
-     * @RendererAttribute({
-     *     attributeType: AttributeType.EVENT,
-     *     displayLabel: 'On Submit',
-     *     eventTrigger: 'onSubmit',
-     * })
-     * handleSubmit(event: Event) {
-     *     event.preventDefault();
-     *     const formData = {
-     *         username: this.username,
-     *         password: this.password,
-     *         rememberMe: this.rememberMe,
-     *         role: this.userrole,
-     *     };
-     *     this.dispatchEvent(new CustomEvent('onSubmit', {
-     *         detail: { formData },
-     *         bubbles: true,
-     *         composed: true,
-     *     }));
-     * }
-     * ```
-     */
+    @property({ type: Number })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.RANGE_SLIDER,
+        displayLabel: 'Age',
+        optionItems: {
+            minValue: 18,
+            maxValue: 100,
+            stepValue: 1,
+            defaultValue: 25,
+            displayTooltip: true,
+            unit: 'years',
+        } as RangeSliderConfig,
+        fieldMappings: 'age',
+    })
+    age = 25;
+
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.FILE_INPUT,
+        displayLabel: 'Profile Picture',
+        optionItems: {
+            accept: '.jpg,.png',
+            multiple: false,
+            maxFileSize: 5000000 // 5MB
+        } as FileInputConfig,
+        fieldMappings: 'profilePicture',
+    })
+    profilePicture = '';
+
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.DATE_PICKER,
+        displayLabel: 'Birth Date',
+        optionItems: {
+            minDate: '1900-01-01',
+            maxDate: '2024-12-31'
+        } as DatePickerConfig,
+        fieldMappings: 'birthDate',
+    })
+    birthDate = '';
+
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.COLOR_PICKER,
+        displayLabel: 'Favorite Color',
+        fieldMappings: 'favoriteColor',
+    })
+    favoriteColor = '#000000';
+
+    @property({ type: Number })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.NUMBER_INPUT,
+        displayLabel: 'Height',
+        optionItems: {
+            min: 50,
+            max: 250,
+            step: 1,
+            defaultValue: 170
+        } as NumberInputConfig,
+        fieldMappings: 'height',
+    })
+    height = 170;
+
+    @property({ type: String })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.TEXTAREA,
+        displayLabel: 'Bio',
+        placeholderText: 'Tell us about yourself',
+        optionItems: {
+            rows: 5,
+            cols: 50,
+        } as TextAreaConfig,
+        fieldMappings: 'bio',
+    })
+    bio = '';
+
+    @property({ type: Boolean })
+    @RendererAttribute({
+        attributeType: AttributeType.PROPERTY,
+        uiComponentType: UserInterfaceType.CHECKBOX,
+        displayLabel: 'Newsletter Subscription',
+        fieldMappings: 'newsletterSubscribed',
+    })
+    newsletterSubscribed = false;
+
     @RendererAttribute({
         attributeType: AttributeType.EVENT,
         displayLabel: 'On Submit',
@@ -289,13 +179,65 @@ export class {{componentClassName}} extends LitElement {
         const formData = {
             username: this.username,
             password: this.password,
-            rememberMe: this.rememberMe,
-            role: this.userrole,
+            userRole: this.userRole,
+            termsAccepted: this.termsAccepted,
+            age: this.age,
+            profilePicture: this.profilePicture,
+            birthDate: this.birthDate,
+            favoriteColor: this.favoriteColor,
+            height: this.height,
+            bio: this.bio,
+            newsletterSubscribed: this.newsletterSubscribed,
         };
         this.dispatchEvent(new CustomEvent('onSubmit', {
             detail: { formData },
             bubbles: true,
             composed: true,
         }));
+    }
+
+    render() {
+        return html`
+            <!-- Render form fields here -->
+            <form @submit="${this.handleSubmit}">
+                <label for="username">Username:</label>
+                <input id="username" type="text" .value="${this.username}" @input="${(e: Event) => this.username = (e.target as HTMLInputElement).value}" />
+
+                <label for="password">Password:</label>
+                <input id="password" type="password" .value="${this.password}" @input="${(e: Event) => this.password = (e.target as HTMLInputElement).value}" />
+
+                <label for="role">User Role:</label>
+                <select id="role" .value="${this.userRole}" @change="${(e: Event) => this.userRole = (e.target as HTMLSelectElement).value}">
+                    ${this.userRoleOptions.map(option => html`<option value="${option.value}">${option.label}</option>`)}
+                </select>
+
+                <label for="termsAccepted">Accept Terms:</label>
+                <input id="termsAccepted" type="checkbox" .checked="${this.termsAccepted}" @change="${(e: Event) => this.termsAccepted = (e.target as HTMLInputElement).checked}" />
+
+                <label for="age">Age:</label>
+                <input id="age" type="range" min="18" max="100" step="1" .value="${this.age}" @input="${(e: Event) => this.age = Number((e.target as HTMLInputElement).value)}" />
+                <span>${this.age} years</span>
+
+                <label for="profilePicture">Profile Picture:</label>
+                <input id="profilePicture" type="file" accept=".jpg,.png"  @change="${(e: Event) => this.profilePicture = (e.target as HTMLInputElement).files?.[0]?.name || ''}" />
+
+                <label for="birthDate">Birth Date:</label>
+                <input id="birthDate" type="date" .value="${this.birthDate}" @change="${(e: Event) => this.birthDate = (e.target as HTMLInputElement).value}" />
+
+                <label for="favoriteColor">Favorite Color:</label>
+                <input id="favoriteColor" type="color" .value="${this.favoriteColor}" @input="${(e: Event) => this.favoriteColor = (e.target as HTMLInputElement).value}" />
+
+                <label for="height">Height (cm):</label>
+                <input id="height" type="number" min="50" max="250" step="1" .value="${this.height}" @input="${(e: Event) => this.height = Number((e.target as HTMLInputElement).value)}" />
+
+                <label for="bio">Bio:</label>
+                <textarea id="bio" rows="5" cols="50" .value="${this.bio}" @input="${(e: Event) => this.bio = (e.target as HTMLTextAreaElement).value}"></textarea>
+
+                <label for="newsletterSubscribed">Newsletter Subscription:</label>
+                <input id="newsletterSubscribed" type="checkbox" .checked="${this.newsletterSubscribed}" @change="${(e: Event) => this.newsletterSubscribed = (e.target as HTMLInputElement).checked}" />
+
+                <button type="submit">Submit</button>
+            </form>
+        `;
     }
 }
