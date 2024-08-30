@@ -10,6 +10,15 @@ declare global {
 globalThis.zeroComponents = {} as Record<string, any>;
 
 const initializeStyles = () => {
+    window.addEventListener('element-connected', (event: CustomEvent) => {
+        const element = event.detail.element;
+        console.log('Component Loaded:', element);
+        // You can perform any additional actions here, such as updating component properties or state
+      });
+    window.addEventListener('register-plugins', (event: CustomEvent) => {
+        console.log('Module Loaded:', event);
+        // You can perform any additional actions here, such as updating component properties or state
+      });
     const styleElement = document.createElement('style');
     document.head?.appendChild(styleElement);
 };

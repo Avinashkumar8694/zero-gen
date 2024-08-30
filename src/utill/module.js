@@ -123,7 +123,7 @@ const prepareModuleConfig = async (name, wsPath) => {
         const pluginConfig = JSON.parse(readFileSync(pluginJsonPath(wsPath), 'utf-8'));
         return {
             pluginClassName: pascalCase(name),
-            pluginId: `${pluginConfig.modules.idPrefix}${kebabCase(name)}`
+            pluginId: `${pascalCase(name)}-${`${Math.random()*1000999}`.substring(5)}`
         };
     } catch (err) {
         handleErrorAndExit(`Failed to prepare module configuration: ${err.message}`);
