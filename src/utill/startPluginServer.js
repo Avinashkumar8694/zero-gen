@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { platform } from 'node:process';
-
+import { join } from 'node:path';
 /**
  * Starts the plugins server.
  * 
@@ -30,8 +30,7 @@ export const startPluginsServer = async (wsPath) => {
             cwd: serverRoot,
             stdio: 'inherit',
             env: {
-                ...process.env,
-                PORT: '989',
+                PORT: '5555',
                 BASE_PATH: '/service',
                 PLUGIN_DIR_ROOT: 'plugins',
             },

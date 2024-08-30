@@ -10,6 +10,7 @@ import { copyAssets } from './fsUtill.js';
 import { success, fail, progress } from './log.js';
 import { componentTemplatesPath } from './pathUtill.js';
 import { formatCode } from './prettierUtill.js';
+import {logExecution, getCurrentPath, getProjectPath} from './cmd.js'
 
 /**
  * Main function to create a new component package in the workspace.
@@ -19,7 +20,7 @@ import { formatCode } from './prettierUtill.js';
  */
 export const createComponentPackage = async (wsPath, name, description) => {
     const componentDir = join(wsPath, 'packages', name);
-
+    logExecution(`Create component`, { name, description: description, componentDir });
     if (existsSync(componentDir)) {
         return handleExistingComponent(componentDir);
     }
@@ -61,7 +62,7 @@ const initNpmPackage = name => {
 const updatePackageJson = (componentDir, description) => {
     const packageJsonPath = join(componentDir, 'package.json');
     const packageData = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-    packageData.alpha = { component: true, description };
+    packageData.zero = { component: true, description };
     writeFileSync(packageJsonPath, JSON.stringify(packageData, null, 2));
 };
 

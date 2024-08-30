@@ -26,5 +26,5 @@ export const success = msg => baseLog(successColor(`✔ ${msg}`));
  */
 export const fail = (msg, err) => {
     baseError(errorColor(`✖ ${msg}`));
-    if (err) baseError(err);
+    if (err) baseError(err?.message);
 };
