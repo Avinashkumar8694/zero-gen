@@ -46,7 +46,7 @@ export const addDefaultDependencies = pkgJson => {
     pkgJson.devDependencies = {
         lit: '^3.1.4',
         typescript: '^5.2.2',
-        'zero-annotation': '^1.0.9',
+        'zero-annotation': '^1.0.10',
     };
     pkgJson.dependencies = {
         express: '^4.19.2',
