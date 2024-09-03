@@ -2,12 +2,20 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { env } from 'node:process';
+import cors from 'cors'; // Import cors
 
 const app = express();
 const port = env.PORT || 3000;
 const basePath = env.BASE_PATH || '';
 
 app.use(express.json()); // Middleware to parse JSON bodies
+
+// Use CORS middleware
+app.use(cors({
+    origin: '*', // Allow all origins (or configure specific origins)
+    methods: ['GET', 'POST', 'DELETE', 'PUT'], // Allow specific HTTP methods
+    allowedHeaders: ['Content-Type'], // Allow specific headers
+}));
 
 // Create the application and setup routes
 const createApp = () => {

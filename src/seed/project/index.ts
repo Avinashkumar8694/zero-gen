@@ -61,7 +61,7 @@ const createInputElement = (key: string, config: any, customElement: HTMLElement
             textarea.id = key;
             textarea.value = config.initialValue?.toString() || '';
             textarea.placeholder = config.placeholderText || '';
-            textarea.addEventListener('input', (e) => {
+            textarea.addEventListener('change', (e) => {
                 customElement[key] = (e.target as HTMLTextAreaElement).value;
             });
             inputElement.appendChild(textarea);
@@ -193,7 +193,6 @@ const createInputElement = (key: string, config: any, customElement: HTMLElement
             inputElement.appendChild(defaultInput);
             break;
     }
-
     return inputElement;
 };
 
