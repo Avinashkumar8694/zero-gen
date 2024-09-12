@@ -17,6 +17,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "private": true,
   "dependencies": {
     "@types/node": "^22.3.0",
     "axios": "^1.7.3",
