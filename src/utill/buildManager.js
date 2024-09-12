@@ -57,9 +57,15 @@ const buildPlugin = async (pluginPath, wsPath, name) => {
         });
         copySync(
             join(_p, 'dist'),
-            join(wsPath, 'server', 'plugins'),
+            join(wsPath, 'server', 'plugins',packageJson.name),
             "Build added to plougin server",
             "failed to add build to plugin server"
+        );
+        copySync(
+            join(_p, 'assets'),
+            join(wsPath, 'server', 'plugins',packageJson.name, 'assets'),
+            "assets added to plougin server",
+            "failed to add assets build to plugin server"
         );
     });
 

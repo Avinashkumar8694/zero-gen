@@ -34,7 +34,7 @@ const createInputElement = (key: string, config: any, customElement: HTMLElement
     switch (config.uiComponentType) {
         case UserInterfaceType.TEXT_INPUT:
             const textInput = document.createElement('input');
-            textInput.type = 'text';
+            textInput.type = config?.optionItems?.type || 'text';
             textInput.id = key;
             textInput.value = config.initialValue?.toString() || '';
             textInput.placeholder = config.placeholderText || '';
@@ -62,7 +62,8 @@ const createInputElement = (key: string, config: any, customElement: HTMLElement
             textarea.value = config.initialValue?.toString() || '';
             textarea.placeholder = config.placeholderText || '';
             textarea.addEventListener('change', (e) => {
-                customElement[key] = (e.target as HTMLTextAreaElement).value;
+                let value = config?.optionItems?.type == 'Object' ? JSON.parse((e.target as HTMLTextAreaElement).value) : (e.target as HTMLTextAreaElement).value;
+                customElement[key] = value;
             });
             inputElement.appendChild(textarea);
             break;
