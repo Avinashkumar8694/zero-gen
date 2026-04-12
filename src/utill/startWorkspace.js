@@ -28,6 +28,15 @@ const createViteServer = (wsPath, port) => {
         root: wsPath,
         server: {
             port,
+            proxy: {
+                '/service': {
+                    target: 'http://localhost:5555',
+                    changeOrigin: true,
+                }
+            }
+        },
+        optimizeDeps: {
+            exclude: ['zero-annotation'],
         },
     });
 };

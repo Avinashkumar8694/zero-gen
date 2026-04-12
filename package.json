@@ -1,6 +1,6 @@
 {
   "name": "zero-gen",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "",
   "main": "./src/zero-gen.js",
   "type": "module",
@@ -8,16 +8,20 @@
     "zero-gen": "./src/zero-gen.js"
   },
   "scripts": {
+    "build": "echo 'Building zero-gen...' && chmod +x ./src/zero-gen.js",
+    "prepublishOnly": "npm run build",
+    "push": "npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "homepage": "./README.md",
   "files": [
-    "*"
+    "src",
+    "README.md",
+    "package.json"
   ],
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "private": true,
   "dependencies": {
     "@types/node": "^22.3.0",
     "axios": "^1.7.3",
